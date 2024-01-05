@@ -1,57 +1,67 @@
-const Model= require("../models/modelModel")
+const Model = require("../models/modelModel");
 
 // CREATE - Création d'un nouveau modèle
-exports.createModel = async (name, description, prize) => {
+exports.createModel = async (req, res) => {
+  const { name, description, prize } = req.body;
   try {
-    const newModel = await Model.create({
+    const existingModel = await Model.findOne({ where: { name: name } });
+    if (existingModel) {
+      return res.status(400).json({ message: "Ce modèle existe déjà" });
+    }
+    await Model.create({
       name,
       description,
       prize,
     });
-    console.log('Nouveau modèle créé:', newModel.toJSON());
+    res.status(200).json({ message: "Nouveau modèle créé" });
   } catch (error) {
-    console.error('Erreur lors de la création du modèle:', error);
+    res.status(500).json({
+      message: "Erreur lors de la création du modèle",
+      error: error.message,
+    });
   }
 };
 
 // READ - Lecture de tous les modèles
-exports.readModel = async () => {
+exports.readModel = async (req, res) => {
   try {
     const models = await Model.findAll();
-    console.log('Liste des modèles:');
-    models.forEach((model) => {
-      console.log(model.toJSON());
-    });
+    res.status(200).json(models);
   } catch (error) {
-    console.error('Erreur lors de la lecture des modèles:', error);
+    res.status(500).json("Erreur lors de la lecture des modèles:", error);
   }
 };
 
 // UPDATE - Mise à jour des informations d'un modèle
-exports.updateModel = async (modelId, newData) => {
+exports.updateModel = async (req, res) => {
   try {
+    const modelId = req.params.id;
+    
     const modelToUpdate = await Model.findByPk(modelId);
     if (modelToUpdate) {
-      await modelToUpdate.update(newData);
-      console.log('Informations modèle mises à jour:', modelToUpdate.toJSON());
+      await modelToUpdate.update(req.body);
+      res.status(200).json("Modèle mis à jour");
     } else {
-      console.log('Modèle non trouvé.');
+      res.status(404).json("Modèle non trouvé.");
     }
   } catch (error) {
-    console.error('Erreur lors de la mise à jour des informations du modèle:', error);
+    res
+      .status(500)
+      .json("Erreur lors de la mise à jour des informations du modèle");
   }
 };
 
 // DELETE - Suppression d'un modèle
-exports.deleteModel = async (modelId) => {
+exports.deleteModel = async (req, res) => {
+  const modelId = req.params.id
   try {
     const deletedRowCount = await Model.destroy({ where: { id: modelId } });
     if (deletedRowCount > 0) {
-      console.log('Modèle supprimé avec succès.');
+      res.status(200).json("Modèle supprimé avec succès.");
     } else {
-      console.log('Modèle non trouvé ou déjà supprimé.');
+      res.status(404).json("Modèle non trouvé ou déjà supprimé.");
     }
   } catch (error) {
-    console.error('Erreur lors de la suppression du modèle:', error);
+    res.status(500).json("Erreur lors de la suppression du modèle:", error);
   }
 };
