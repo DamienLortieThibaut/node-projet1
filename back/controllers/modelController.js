@@ -1,8 +1,3 @@
-const db = require("../database/database");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-
 const Model= require("../models/modelModel")
 
 // CREATE - Création d'un nouveau modèle
@@ -20,7 +15,7 @@ exports.createModel = async (name, description, prize) => {
 };
 
 // READ - Lecture de tous les modèles
-exports.readModels = async () => {
+exports.readModel = async () => {
   try {
     const models = await Model.findAll();
     console.log('Liste des modèles:');

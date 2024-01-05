@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const ModelController = require('../controllers/modelController');
+const modelController = require('../controllers/modelController');
 
-router.post('/add', ModelController.createModel);
-router.get('/all', ModelController.getAllModels);
-router.put('/update/:modelId', ModelController.updateModel);
-router.delete('/delete/:modelId', ModelController.deleteModel);
+router.post('/add', modelController.createModel);
+router.get('/all', modelController.readModel);
+router.put('/update/:id', modelController.updateModel);
+router.delete('/delete/:id', modelController.deleteModel);
 
 module.exports = router;

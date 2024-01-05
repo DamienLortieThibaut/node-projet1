@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const Tool = require("../models/toolModel");
 
 //--------- Create a tool ---------//
@@ -45,7 +43,7 @@ exports.getToolById = async (req, res) => {
 
 //--------- Update a tool ---------//
 
-exports.uptadeTool = async (req, res) => {
+exports.updateTool = async (req, res) => {
     const { id } = req.params;
     try {
         const tool = await Tool.findByPk(id);

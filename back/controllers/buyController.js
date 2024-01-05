@@ -60,7 +60,7 @@ exports.getAll = async (req, res) => {
 };
 
 // Récupérer un achat par id
-exports.getById = async (res, res) => {
+exports.getById = async (req, res) => {
   const buyId = req.params.id;
   try {
     const result = await Buy.findByPk(buyId);
