@@ -29,10 +29,12 @@ const User = sequelize.define(
     },
     role: {
       type: DataTypes.ENUM("admin", "accounter"),
-      allowNull: false,
+      defaultValue: null,
+      allowNull: true,
     },
   },
   {
+    sequelize,
     freezeTableName: true,
   }
 );
