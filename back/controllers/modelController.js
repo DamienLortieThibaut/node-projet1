@@ -5,8 +5,6 @@ require("dotenv").config();
 
 const Model= require("../models/modelModel")
 
-
-
 // CREATE - Création d'un nouveau modèle
 exports.createModel = async (name, description, prize) => {
   try {

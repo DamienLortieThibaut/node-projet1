@@ -1,18 +1,19 @@
-express = require("express");
-const cors = require("cors");
-const userRoutes = require('./routes/userRoute');
-const dataBaseRoute = require("./routes/databaseRoute");
-const modelRoutes = require('./routes/modelRoutes');
+const express = require('express');
+const router = express.Router();
 
-const app = express();
 
-app.use(express.json());
-app.use(cors());
+//----------------  Routes  ------------------//
+const userRoute = require('./routes/userRoute');
+const toolRoute = require('./routes/toolRoute');
+const modelRoute = require('./routes/modelRoute');
+const buyRoute = require('./routes/buyRoute');
+const databaseRoute = require('./routes/databaseRoute');
 
-app.use("/database", dataBaseRoute);
-app.use('/users', userRoutes);
-app.use('/models', modelRoutes);
+//---------------- Export ----------------//
+app.use('/user', userRoute);
+app.use('/tool', toolRoute);
+app.use('/model', modelRoute);
+app.use('/buy', buyRoute);
+app.use('/database', databaseRoute);
 
-app.listen(8000, () => {
-  console.log("Serveur lancé sur le port 8000");
-});
+module.exports = router;
