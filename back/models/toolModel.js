@@ -1,6 +1,7 @@
 const sequelize = require("../database/database");
 const { DataTypes } = require("sequelize");
 const Model = require("./modelModel");
+const Get = require("./getModel");
 
 const Tool = sequelize.define(
   "tool",
@@ -32,10 +33,10 @@ const Tool = sequelize.define(
 );
 
 Tool.belongsToMany(Model, {
-  through: "get",
+  through: Get,
 });
 Model.belongsToMany(Tool, {
-  through: "get",
+  through: Get,
 });
 
 module.exports = Tool;
