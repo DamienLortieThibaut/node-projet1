@@ -1,0 +1,33 @@
+footer {
+    border-top: solid 0.5px grey;
+    background-color: #08080D;
+    color: white;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 100px 100px;
+  }
+  
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .col-md-6 {
+    width: 48%;
+  }
+  
+  .bottom-bar {
+    background-color: #212529;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  h3 {
+    color: #FDD526;
+    opacity: 0.8;
+  }

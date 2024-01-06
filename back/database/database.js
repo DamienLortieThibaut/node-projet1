@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize')
 
 const sequelize = new Sequelize('nodeipssiprojet', 'root', '', {
-    port: 3307,
+    port: 3306,
     host: 'localhost',
-    dialect: 'mariadb'
-})
+    dialect: 'mysql'
+});
 
 sequelize.authenticate().then(() => {
     console.log('Authentification réussi');

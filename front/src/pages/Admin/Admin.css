@@ -1,0 +1,26 @@
+.admin {
+    height: 100vh;
+    background: #1D2125;
+    padding: 125px;
+    text-align: center;
+}
+.admin h3 {
+    color: white;
+}
+.table, th, tr, td {
+    background-color: transparent !important;
+    color: white !important;
+  }
+td img {
+    width: 150px;
+}
+form {
+    color: white;
+}
+form label {
+    text-align: start;
+}
+
+  #table-contet {
+    margin-right: 40px !important;
+  }

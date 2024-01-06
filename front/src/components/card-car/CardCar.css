@@ -1,0 +1,17 @@
+.card-car {
+    width: 250px;
+    margin-left: 15px;
+}
+.card-car img{
+    width: 100%;
+}
+.card-car .info {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+a {
+    text-decoration: none;
+    color: white;
+}

@@ -7,4 +7,7 @@ router.get("/all", getController.getAll);
 router.delete("/delete/:id", getController.delete);
 router.put("/update/:id", getController.update);
 router.get("/search/:id", getController.getById);
+router.get('/byModel/:modelId', getController.getByModelId);
+router.get('/byTool/:toolId', getController.getByToolId);
+
 module.exports = router;

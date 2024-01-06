@@ -8,6 +8,7 @@ require("dotenv").config();
 exports.register = async (req, res) => {
   try {
     const { firstname, lastname, email, password } = req.body;
+    console.log(firstname, lastname, email, password)
     const existingUser = await User.findOne({ where: { email: email } });
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé." });
@@ -23,13 +24,14 @@ exports.register = async (req, res) => {
     const token = jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
-    res.status(401).json({ token: token });
+    res.status(201).json({ token: token }); // Correction ici pour utiliser le statut 201
   } catch (error) {
     res
       .status(500)
       .json({ message: "Erreur lors de l'enregistrement de l'utilisateur" });
   }
 };
+
 
 //--------- Login a user ---------//
 
@@ -48,7 +50,7 @@ exports.login = async (req, res) => {
         .status(401)
         .json({ message: "Email ou mot de passe incorrect." });
     }
-    const token = jwt.sign({ id: existingUser._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: existingUser._id, role: existingUser.role }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
     res.status(200).json({ token });

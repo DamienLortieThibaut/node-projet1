@@ -23,6 +23,10 @@ const Model = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,

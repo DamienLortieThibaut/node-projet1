@@ -21,7 +21,7 @@ const Tool = sequelize.define(
       unique: true,
       allowNull: false,
     },
-    primary: {
+    is_primary: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false,

@@ -10,4 +10,5 @@ const Get = sequelize.define(
   }
 );
 
+
 module.exports = Get;

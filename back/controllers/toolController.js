@@ -76,3 +76,4 @@ exports.deleteTool = async (req, res) => {
       res.status(500).json({ error: 'Erreur lors de la suppression de l\'outil' });
     }
   };
+

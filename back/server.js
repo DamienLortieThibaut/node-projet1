@@ -21,6 +21,8 @@ app.use('/buy', buyRoute);
 app.use('/get', getRoute)
 app.use('/database', databaseRoute);
 
+app.use('/Images', express.static('./Images'))
+
 app.listen(8000, function () {
   console.log("Serveur ouvert sur le port 8000");
 });
