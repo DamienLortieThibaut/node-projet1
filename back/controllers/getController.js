@@ -10,7 +10,6 @@ exports.add = async (req, res) => {
     console.error("Error adding purchase recovery : ", error);
     res.status(500).json({ error: "Error adding purchase recovery" });
   }
-  res.status(201).json("Get added");
 };
 
 // DELETE du CRUD
