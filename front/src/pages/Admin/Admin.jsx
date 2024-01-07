@@ -17,10 +17,8 @@ function Admin() {
   const [fusionTab, setFusionTab] = useState([]);
 
   const fusionTabFunc = (all, edit) => {
-    console.log(edit)
     // Vérifier si 'edit' est un tableau
     if (!Array.isArray(edit)) {
-      console.error("Le paramètre 'edit' n'est pas un tableau.");
       return all; // Retourner 'all' tel quel en cas d'erreur
     }
   
@@ -36,7 +34,6 @@ function Admin() {
         return elem;
       }
     });
-    console.log(result)
     setFusionTab(result);
   };
 
@@ -97,7 +94,11 @@ function Admin() {
     if (editModel) {
       modelApi.update(editModel.id, editModel).then(() => {
         modelApi.getAllModels(accessToken).then(data => setModels(data));
-        setEditModel(null);
+        setEditModel([null]);
+        setToolsEditModel([]);
+        setFusionTab([]);
+        setAllTools([]);
+        
       });
     }
   };
@@ -202,9 +203,11 @@ function Admin() {
               <tr key={tool.id}>
                 <td>{tool.name}</td>
                 <td>{tool.prize} €</td>
-                <td></td>
+                <td>                   
+                  <input type="checkbox"  checked={tool.is_primary !== undefined ? true : false}/>                
+                </td>
                 <td>
-                  <input type="checkbox" />                
+                  <input type="checkbox"  checked={tool.is_primary !== undefined ? true : false}/>                
                 </td>
               </tr>
             ))}
