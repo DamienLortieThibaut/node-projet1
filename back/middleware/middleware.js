@@ -62,7 +62,7 @@ exports.isAccounter = async (req, res, next) => {
   try {
     const result = await User.findOne({ where: { email: email } });
 
-    if (result.dataValues.rol === "accounter") {
+    if (result.dataValues.role === "accounter") {
       next();
     } else {
       res.status(403).json({ erreur: "Access denied" });
@@ -84,9 +84,10 @@ exports.isAccounterOrAdmin = async (req, res, next) => {
 
   try {
     const result = await User.findOne({ where: { email: email } });
+    console.log(result);
     if (
-      result.dataValues.rol === "accounter" ||
-      result.dataValues.rol === "admin"
+      result.dataValues.role === "accounter" ||
+      result.dataValues.role === "admin"
     ) {
       next();
     } else {
