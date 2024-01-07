@@ -79,47 +79,79 @@ exports.getById = async (req, res) => {
 // Chercher les Tools à partir de l'ID d'un Model
 exports.getTools = async (req, res) => {
   const modelId = req.params.modelId;
+
   try {
-    const result = await CarOption.findAll({
+    const carOptions = await CarOption.findAll({
       where: { modelId: modelId },
     });
-      
-    const allToolsPromises = result.map(async (element) => {
-      return await Tool.findByPk(element.toolId);
-    });
 
-    const allTools = await Promise.all(allToolsPromises);
-
-    if (result) {
-      res.status(200).json(allTools);
-    } else {
-      res.status(404).json({ error: "Get not found" });
+    if (!carOptions || carOptions.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "CarOptions non trouvés pour l'ID de modèle donné" });
     }
+
+    const toolsDetails = await Promise.all(
+      carOptions.map(async (carOption) => {
+        const tool = await Tool.findByPk(carOption.toolId);
+        return {
+          id: tool.id,
+          prize: tool.prize,
+          name: tool.name,
+          is_primary: carOption.is_primary,
+        };
+      })
+    );
+
+    res.status(200).json(toolsDetails);
   } catch (error) {
-    console.error("Error retrieving Gets by Model ID:", error);
-    res.status(500).json({ error: "Error retrieving Gets by Model ID" });
+    console.error(
+      "Erreur lors de la récupération des outils par ID de modèle :",
+      error
+    );
+    res.status(500).json({
+      error: "Erreur lors de la récupération des outils par ID de modèle",
+    });
   }
 };
 
-// Chercher les Models à partir de l'ID d'un Tool
+// Chercher les Models à partir de l'ID d'un Tools
 exports.getModels = async (req, res) => {
   const toolId = req.params.toolId;
+
   try {
-    const result = await CarOption.findAll({
+    const carOptions = await CarOption.findAll({
       where: { toolId: toolId },
     });
-    const allModelsPromises = result.map(async (element) => {
-      return await Model.findByPk(element.modelId);
-    });
 
-    const allModels = await Promise.all(allModelsPromises);
-    if (result) {
-      res.status(200).json(allModels);
-    } else {
-      res.status(404).json({ error: "Get not found" });
+    if (!carOptions || carOptions.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "CarOptions non trouvés pour l'ID d'outil donné" });
     }
+
+    const modelsDetails = await Promise.all(
+      carOptions.map(async (carOption) => {
+        const model = await Model.findByPk(carOption.modelId);
+        return {
+          id: model.id,
+          name: model.name,
+          description: model.description,
+          prize: model.prize,
+          image: model.image,
+          is_primary: carOption.is_primary,
+        };
+      })
+    );
+
+    res.status(200).json(modelsDetails);
   } catch (error) {
-    console.error("Error retrieving Gets by Model ID:", error);
-    res.status(500).json({ error: "Error retrieving Gets by Model ID" });
+    console.error(
+      "Erreur lors de la récupération des modèles par ID d'outil :",
+      error
+    );
+    res.status(500).json({
+      error: "Erreur lors de la récupération des modèles par ID d'outil",
+    });
   }
 };
