@@ -167,7 +167,7 @@ const userApi = {
   const getApi = {
     add: (getData) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/add`, {
+      return fetch(`${API_BASE_URL}/carOption/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ const userApi = {
   
     getAll: () => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/all`, {
+      return fetch(`${API_BASE_URL}/carOption/all`, {
         headers: {
           'Authorization': token,
         },
@@ -188,7 +188,7 @@ const userApi = {
   
     getById: (getId) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/search/${getId}`, {
+      return fetch(`${API_BASE_URL}/carOption/search/${getId}`, {
         headers: {
           'Authorization': token,
         },
@@ -197,7 +197,7 @@ const userApi = {
   
     update: (getId, getData) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/update/${getId}`, {
+      return fetch(`${API_BASE_URL}/carOption/update/${getId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ const userApi = {
   
     delete: (getId) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/delete/${getId}`, {
+      return fetch(`${API_BASE_URL}/carOption/delete/${getId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': token,
@@ -218,7 +218,7 @@ const userApi = {
     },
     getByModelId: (modelId) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/byModel/${modelId}`, {
+      return fetch(`${API_BASE_URL}/carOption/byModel/${modelId}`, {
           headers: {
               'Authorization': token,
           },
@@ -227,7 +227,7 @@ const userApi = {
 
   getByToolId: (toolId) => {
       const token = getAuthorizationToken();
-      return fetch(`${API_BASE_URL}/get/byTool/${toolId}`, {
+      return fetch(`${API_BASE_URL}/carOption/byTool/${toolId}`, {
           headers: {
               'Authorization': token,
           },

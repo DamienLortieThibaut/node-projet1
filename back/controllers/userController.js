@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
         .status(401)
         .json({ message: "Email ou mot de passe incorrect." });
     }
-    const token = jwt.sign({ id: existingUser._id, role: existingUser.role }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ email: email}, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
     res.status(200).json({ token });

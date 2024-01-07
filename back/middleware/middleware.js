@@ -1,4 +1,4 @@
-const db = require("../database/database");
+const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -33,18 +33,13 @@ exports.isAdmin = async (req, res, next) => {
   if (!token) return res.status(401).json({ error: "Access denied" });
 
   const email = getEmailFromToken(token);
-
   if (!email) {
     return res.status(401).json({ error: "Token invalid" });
   }
 
   try {
-    const result = await db.query(
-      "SELECT role from user where email = ?",
-      email
-    );
-
-    if (result[0].role === "admin") {
+    const result = await User.findOne({ where: { email: email } });
+    if (result.dataValues.role === "admin") {
       next();
     } else {
       res.status(403).json({ erreur: "Access denied" });
@@ -65,12 +60,9 @@ exports.isAccounter = async (req, res, next) => {
   }
 
   try {
-    const result = await db.query(
-      "SELECT role from user where email = ?",
-      email
-    );
+    const result = await User.findOne({ where: { email: email } });
 
-    if (result[0].role === "accounter") {
+    if (result.dataValues.rol === "accounter") {
       next();
     } else {
       res.status(403).json({ erreur: "Access denied" });
@@ -91,11 +83,11 @@ exports.isAccounterOrAdmin = async (req, res, next) => {
   }
 
   try {
-    const result = await db.query(
-      "SELECT role from user where email = ?",
-      email
-    );
-    if (result[0].role === "accounter" || result[0].role === "admin") {
+    const result = await User.findOne({ where: { email: email } });
+    if (
+      result.dataValues.rol === "accounter" ||
+      result.dataValues.rol === "admin"
+    ) {
       next();
     } else {
       res.status(403).json({ erreur: "Access denied" });

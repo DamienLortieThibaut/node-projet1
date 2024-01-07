@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import './Home.css';
 import CardDetail from '../../components/card-detail/CardDetail';
 import CardCar from '../../components/card-car/CardCar'
