@@ -8,11 +8,16 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import { isProtectRouteWithRoles, isAuthenticated } from './utils/helpers';
-import { Navigate } from 'react-router-dom';
+import ProtectedRouteWithRoles from './utils/ProtectedRouteWithRoles';
+import { AuthProvider, useAuth } from './utils/provider';
+import ProtectedRouteWithLogin from './utils/ProtectedRouteWithLogin';
+
 
 function App() {
+
   return (
+    <AuthProvider>
+
     <BrowserRouter>
       <Header /> 
       <Routes>
@@ -20,21 +25,23 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route
           path="/admin"
-          element={isProtectRouteWithRoles(['admin']) ? <Admin /> : <Navigate to="/" />}
+          element={<ProtectedRouteWithRoles redirectPath="/" requiredRoles={['admin']}> <Admin /></ProtectedRouteWithRoles>}
         />
         <Route
           path="/accounting"
-          element={isProtectRouteWithRoles(['admin', 'accounter']) ? <Accounting /> : <Navigate to="/" />}
+          element={<ProtectedRouteWithRoles redirectPath="/" requiredRoles={['admin', 'accounter']}> <Accounting /></ProtectedRouteWithRoles>}
         />
         <Route
           path="/custom/:id"
-          element={isAuthenticated() ? <Custom /> : <Navigate to="/login" />}
+          element={<ProtectedRouteWithLogin redirectPath="/" ><Custom /></ProtectedRouteWithLogin>}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
       <Footer /> 
     </BrowserRouter>
+    </ AuthProvider >
+
   );
 }
 

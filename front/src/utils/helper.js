@@ -1,11 +1,8 @@
+
 import { jwtDecode } from "jwt-decode";
 
 // Fonction de vérification de l'authentification
-export const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
-    console.log(token); // Vérifiez la valeur du token
-
-
+export const isAuthenticated = (token) => {
     if (token) {
         const decodedToken = jwtDecode(token);
         const expirationTime = decodedToken.exp * 1000;
@@ -18,9 +15,7 @@ export const isAuthenticated = () => {
 };
 
 // Fonction de vérification des rôles
-export const hasRequiredRole = (requiredRoles) => {
-    const token = localStorage.getItem('token');
-
+export const hasRequiredRole = (requiredRoles, token) => {
     if (token) {
         const decodedToken = jwtDecode(token);
         const userRole = decodedToken.role; // Utiliser le champ 'roles' plutôt que 'role'
@@ -30,20 +25,4 @@ export const hasRequiredRole = (requiredRoles) => {
     }
 
     return false;
-};
-
-// Fonction de protection des routes avec vérification des rôles
-export const isProtectRouteWithRoles = (requiredRoles) => {
-
-    if (isAuthenticated()) {
-        if (hasRequiredRole(requiredRoles)) {
-            console.log(true)
-            return true;
-        } else {
-            console.log(false)
-            return false;
-        }
-    } 
-    console.log(false)
-    return false;
-};
+}

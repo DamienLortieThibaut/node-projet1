@@ -1,32 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
-import { isAuthenticated } from '../../utils/helpers';
+import { isAuthenticated } from '../../utils/helper';
+import { useAuth } from '../../utils/provider';
 
 function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { accessToken, updateAccessToken } = useAuth();
 
   const handleLogout = () => {
-    // Logique de déconnexion : Supprimer le token du local storage
-    localStorage.removeItem('token');
-    // Mettre à jour l'état pour déclencher le rechargement du composant
-    setIsLoggedIn(false);
-    // Ajouter toute autre logique de déconnexion nécessaire
+    updateAccessToken(null);
   };
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      // Si l'utilisateur est connecté, mettre à jour l'état pour déclencher le rechargement du composant
-      setIsLoggedIn(true);
-    }
-  }, []); // Effectue la vérification une fois lors du montage initial du composant
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      // Une fois que l'utilisateur est connecté, réinitialiser l'état pour éviter un rechargement continu
-      setIsLoggedIn(false);
-    }
-  }, [isLoggedIn]); // Effectue l'action une fois que l'état de connexion a changé
 
   return (
     <nav>
@@ -42,7 +25,7 @@ function Header() {
         </ul>
       </div>
       <div className='action'>
-        {!isAuthenticated() && (
+        {!isAuthenticated(accessToken) && (
           <>
             <Link to="/register">
               <button id='register'>Register</button>
@@ -52,7 +35,7 @@ function Header() {
             </Link>
           </>
         )}
-        {isAuthenticated() && (
+        {isAuthenticated(accessToken) && (
           <button id='logout' onClick={handleLogout}>Déconnexion</button>
         )}
       </div>

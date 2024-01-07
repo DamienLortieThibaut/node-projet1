@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { userApi } from '../../services/api';
 import './Register.css';
+import { useAuth } from '../../utils/provider';
+
 
 function Register() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { accessToken, updateAccessToken } = useAuth();
+
 
   const handleRegister = () => {
     const user = {
@@ -19,7 +23,8 @@ function Register() {
     userApi.register(user)
       .then(response => {
         const { token } = response;
-        localStorage.setItem('token', token);      })
+        updateAccessToken(token);
+        })
       .catch(error => {
         console.error('Erreur lors de l\'enregistrement:', error);
       });

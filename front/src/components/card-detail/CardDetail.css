@@ -10,6 +10,7 @@
     max-width: 400px;
     background: #1D2125;
     padding: 25px;
+    border-radius: 15px;
 }
 
 .card-detail img {
@@ -28,4 +29,34 @@
 .card-detail .close i {
     color: white;
     font-size: 24px;
+}
+
+.card-detail button{
+    padding: 15px;
+    background: #FDD526;
+    border: none;
+    outline: none;
+    font-weight: 500;
+    border-radius: 5px;
+}
+
+p  {
+    color: white;
+    margin: 0 !important;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    display: flex;
+    align-items: center;
+    color: white;
+    justify-content: space-between;
+}
+
+ul li p {
+    font-size: 18px;
 }

@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CardCar.css';
-import { isAuthenticated } from '../../utils/helpers';
+import { isAuthenticated } from '../../utils/helper';
+import { useAuth } from '../../utils/provider';
 
 function CardCar({ car, loadDetail, showCard }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { accessToken } = useAuth();
 
   const handleCardClick = () => {
-    if (isAuthenticated()) {
+    if (isAuthenticated(accessToken)) {
       const customUrl = `http://localhost:5173/custom/${car.id}`;
       window.open(customUrl, '_blank');
     } else {

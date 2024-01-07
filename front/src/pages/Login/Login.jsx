@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userApi } from '../../services/api';
 import './Login.css';
+import { useAuth } from '../../utils/provider';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { updateAccessToken } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -17,7 +19,7 @@ function Login() {
     userApi.login(credentials)
       .then(response => {
         const { token } = response;
-        localStorage.setItem('token', token);
+        updateAccessToken(token);
         console.log('Connexion réussie. Token stocké:', token);
         navigate('/');
       })

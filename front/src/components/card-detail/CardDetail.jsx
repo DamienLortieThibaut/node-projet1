@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CardDetail.css'
 import { getApi, toolApi } from '../../services/api';
 
 function CardDetail({ car, onClose }) {
+
+    const [options, setOptions] = useState([]);
+    const [totalOptionsPrice, setTotalOptionsPrice] = useState(0);
 
     useEffect(() => {
         if(car) {
             getApi.getByModelId(car.id)
             .then(res => {
                 console.log(res)
+                //setOptions(res);
+                //const optionsPrice = res.reduce((acc, opt) => acc + opt.prize, 0);
+                //setTotalOptionsPrice(optionsPrice);
               
             })
             .catch(error => {
@@ -30,11 +36,28 @@ function CardDetail({ car, onClose }) {
          
         <h3>Détail de la voiture</h3>
         <ul>
-            <li>
-
-            </li>
+        {
+            options.map((opt, index) => (
+                <li key={index}>
+                    <p>{opt.name}</p>
+                <span>{opt.prize}</span>
+                </li>
+            ))
+        }
+        <li>
+                    <p>option 1</p>
+                <span>20 €</span>
+                </li>
+                <li>
+                    <p>option 1</p>
+                <span>20 €</span>
+                </li>
+                <li>
+                    <p>option 1</p>
+                <span>20 €</span>
+                </li>
         </ul>
-        <p>Prix: {car.prize}</p>
+        <p className='my-3'>Prix: {car.prize + totalOptionsPrice} €</p>
         <button>Acheter</button>
     </div>
 );

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { modelApi } from '../../services/api';
 import './Admin.css';
-
+import { getApi
+ } from '../../services/api';
 function Admin() {
   const [models, setModels] = useState([]);
   const [newModel, setNewModel] = useState({
@@ -11,10 +12,18 @@ function Admin() {
     image: null,
   });
   const [editModel, setEditModel] = useState(null);
+  const [toolsEditModel, setToolsEditModel] = useState([]);
 
   useEffect(() => {
     fetchModels();
   }, []);
+
+  useEffect(() => {
+    if(editModel) {
+      getApi.getByModelId(editModel.id).then(res => setToolsEditModel(res));
+    }
+
+  }, [editModel])
 
   const fetchModels = () => {
     modelApi.getAllModels().then(data => setModels(data));
@@ -145,6 +154,25 @@ function Admin() {
             <button type='button' onClick={handleAddModel} style={{ background: '#008CBA', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Ajouter</button>
           )}
         </form>
+        <h3>{editModel ? 'Modifier les options' : 'Créer les options'}</h3>
+        {editModel ? (
+          <div>
+            {
+            toolsEditModel.map((t, eindex) => (
+              <div>
+                <p>{t.name}</p>
+                  <div className='close' onClick={onClose}>
+                    <i className='bx bx-x'></i>
+                </div>
+              </div>
+            ))
+            }
+          </div>
+        ) : (
+          <div>
+
+          </div>
+        )}
       </div>
 
     
