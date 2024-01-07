@@ -1,12 +1,12 @@
-const Get = require('../models/getModel');
-const Model = require('../models/modelModel');
-const Tool = require('../models/toolModel');
+const CarOption = require("../models/carOptionModel");
+const Model = require("../models/modelModel");
+const Tool = require("../models/toolModel");
 
 // CREATE du CRUD
 exports.add = async (req, res) => {
   try {
     const buy = req.body;
-    const result = await Get.create(buy);
+    const result = await CarOption.create(buy);
     res.status(201).json(result);
   } catch (error) {
     console.error("Error adding purchase recovery : ", error);
@@ -18,7 +18,7 @@ exports.add = async (req, res) => {
 exports.delete = async (req, res) => {
   const getId = req.params.id;
   try {
-    const result = await Get.findByPk(getId);
+    const result = await CarOption.findByPk(getId);
     if (result) {
       await result.destroy();
       res.status(200).json("Purchase successfully deleted");
@@ -36,7 +36,7 @@ exports.update = async (req, res) => {
   const getId = req.params.id;
   const get = req.body;
   try {
-    const result = await Get.findByPk(getId);
+    const result = await CarOption.findByPk(getId);
     if (result) {
       await result.update(get);
       res.status(200).json(result);
@@ -52,7 +52,7 @@ exports.update = async (req, res) => {
 // Afficher les éléments
 exports.getAll = async (req, res) => {
   try {
-    const result = await Get.findAll();
+    const result = await CarOption.findAll();
     res.status(200).json(result);
   } catch (error) {
     console.error("Error retrieving purchases : ", error);
@@ -64,7 +64,7 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
   const getId = req.params.id;
   try {
-    const result = await Get.findByPk(getId);
+    const result = await CarOption.findByPk(getId);
     if (result) {
       res.status(200).json(result);
     } else {
@@ -76,41 +76,50 @@ exports.getById = async (req, res) => {
   }
 };
 
-exports.getByModelId = async (req, res) => {
+// Chercher les Tools à partir de l'ID d'un Model
+exports.getTools = async (req, res) => {
   const modelId = req.params.modelId;
   try {
-    const result = await Get.findAll({
+    const result = await CarOption.findAll({
       where: { modelId: modelId },
-      include: [
-        { model: Model, as: 'model' },
-        { model: Tool, as: 'tool' },
-      ],
     });
 
+    const allToolsPromises = result.map(async (element) => {
+      return await Tool.findByPk(element.toolId);
+    });
+
+    const allTools = await Promise.all(allToolsPromises);
+
     if (result) {
-      res.status(200).json(result);
+      res.status(200).json(allTools);
     } else {
-      res.status(404).json({ error: 'Get not found' });
+      res.status(404).json({ error: "Get not found" });
     }
   } catch (error) {
-    console.error('Error retrieving Gets by Model ID:', error);
-    res.status(500).json({ error: 'Error retrieving Gets by Model ID' });
+    console.error("Error retrieving Gets by Model ID:", error);
+    res.status(500).json({ error: "Error retrieving Gets by Model ID" });
   }
 };
 
-// Chercher les Get à partir de l'ID d'un Tool
-exports.getByToolId = async (req, res) => {
+// Chercher les Models à partir de l'ID d'un Tool
+exports.getModels = async (req, res) => {
   const toolId = req.params.toolId;
   try {
-    const result = await Get.findAll({where: {toolId: toolId}});
+    const result = await CarOption.findAll({
+      where: { toolId: toolId },
+    });
+    const allModelsPromises = result.map(async (element) => {
+      return await Model.findByPk(element.modelId);
+    });
 
+    const allModels = await Promise.all(allModelsPromises);
     if (result) {
-      res.status(200).json(result);
+      res.status(200).json(allModels);
     } else {
-      res.status(404).json({ error: 'Get not found' });
+      res.status(404).json({ error: "Get not found" });
     }
   } catch (error) {
-    console.error('Error retrieving Gets by Tool ID:', error);
-    res.status(500).json({ error: 'Error retrieving Gets by Tool ID' });
+    console.error("Error retrieving Gets by Model ID:", error);
+    res.status(500).json({ error: "Error retrieving Gets by Model ID" });
   }
 };

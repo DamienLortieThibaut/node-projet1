@@ -1,10 +1,10 @@
 const Model = require("../models/modelModel");
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
+const path = require("path");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'Images');
+    cb(null, "Images");
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}_${file.originalname}`);
@@ -21,9 +21,9 @@ exports.uploadImage = multer({
     if (mimeType && extname) {
       return cb(null, true);
     }
-    cb('Give proper files format to upload');
+    cb("Give proper files format to upload");
   },
-}).single('image');
+}).single("image");
 
 // CREATE - Création d'un nouveau modèle
 exports.createModel = async (req, res) => {
@@ -55,7 +55,12 @@ exports.readModel = async (req, res) => {
     const models = await Model.findAll();
     res.status(200).json(models);
   } catch (error) {
-    res.status(500).json("Erreur lors de la lecture des modèles:", error);
+    res
+      .status(500)
+      .json({
+        message: "Erreur lors de la lecture des modèles:",
+        error: error.message,
+      });
   }
 };
 
@@ -63,7 +68,7 @@ exports.readModel = async (req, res) => {
 exports.updateModel = async (req, res) => {
   try {
     const modelId = req.params.id;
-    
+
     const modelToUpdate = await Model.findByPk(modelId);
     if (modelToUpdate) {
       await modelToUpdate.update(req.body);
@@ -80,7 +85,7 @@ exports.updateModel = async (req, res) => {
 
 // DELETE - Suppression d'un modèle
 exports.deleteModel = async (req, res) => {
-  const modelId = req.params.id
+  const modelId = req.params.id;
   try {
     const deletedRowCount = await Model.destroy({ where: { id: modelId } });
     if (deletedRowCount > 0) {
@@ -104,6 +109,11 @@ exports.getModelById = async (req, res) => {
       res.status(404).json({ error: "Modèle non trouvé" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la récupération du modèle par ID", details: error.message });
+    res
+      .status(500)
+      .json({
+        error: "Erreur lors de la récupération du modèle par ID",
+        details: error.message,
+      });
   }
 };

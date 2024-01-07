@@ -1,7 +1,7 @@
 const sequelize = require("../database/database");
 const { DataTypes } = require("sequelize");
 const Model = require("./modelModel");
-const Get = require("./getModel");
+const Get = require("./carOptionModel");
 
 const Tool = sequelize.define(
   "tool",
@@ -21,11 +21,6 @@ const Tool = sequelize.define(
       unique: true,
       allowNull: false,
     },
-    is_primary: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      allowNull: false,
-    },
   },
   {
     freezeTableName: true,
@@ -35,6 +30,7 @@ const Tool = sequelize.define(
 Tool.belongsToMany(Model, {
   through: Get,
 });
+
 Model.belongsToMany(Tool, {
   through: Get,
 });

@@ -3,8 +3,8 @@ const Tool = require("../models/toolModel");
 //--------- Create a tool ---------//
 exports.createTool = async (req, res) => {
     try {
-        const { prize, name, primary } = req.body;
-        const tool = await Tool.create({ prize, name, primary });
+        const { prize, name} = req.body;
+        const tool = await Tool.create({ prize, name});
         res.status(201).json(tool);
     } catch (error) {
         console.error('Erreur lors de la création de l\'outil:', error);
