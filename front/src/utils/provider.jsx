@@ -21,14 +21,3 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
-
-export const Access = ( { children }) => {
-  const {accessToken} = useAuth();
-  const protectRoute = accessToken;
-  return (
-    <AccessContext.Provider value={{ protectRoute }}>
-    {children}
-  </AccessContext.Provider>
-  )
-}

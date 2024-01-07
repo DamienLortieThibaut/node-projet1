@@ -3,11 +3,15 @@ import './Home.css';
 import CardDetail from '../../components/card-detail/CardDetail';
 import CardCar from '../../components/card-car/CardCar'
 import { modelApi } from '../../services/api';
+import { useAuth } from '../../utils/provider';
+
 
 function Home() {
 
+  const { accessToken } = useAuth();
+
   useEffect(() => {
-    modelApi.getAllModels().then(res => setCars(res));
+    modelApi.getAllModels(accessToken).then(res => setCars(res));
   }, []);
 
   const [cars, setCars] = useState([]);

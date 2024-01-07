@@ -1,5 +1,5 @@
 .admin {
-    height: 100vh;
+    min-height: 100vh;
     background: #1D2125;
     padding: 125px;
     text-align: center;
@@ -23,4 +23,10 @@ form label {
 
   #table-contet {
     margin-right: 40px !important;
+  }
+  
+  form input {
+    border-radius: 5px;
+    outline: none;
+    border: none;
   }

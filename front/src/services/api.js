@@ -1,59 +1,51 @@
 const API_BASE_URL = 'http://localhost:8000';
 
 
-const getAuthorizationToken = () => {
-  // Replace with your logic to retrieve the authorization token
-  // from wherever it is stored (e.g., localStorage)
-  return localStorage.getItem('authorizationToken');
-};
-
 const buyApi = {
-  add: (buy) => fetch(`${API_BASE_URL}/buy/add`, {
+  add: (buy, accessToken) => fetch(`${API_BASE_URL}/buy/add`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': getAuthorizationToken(),
+      'Authorization': accessToken,
     },
     body: JSON.stringify(buy),
   }).then(response => response.json()),
 
-  update: (buyId, buy) => fetch(`${API_BASE_URL}/buy/update/${buyId}`, {
+  update: (buyId, buy, accessToken) => fetch(`${API_BASE_URL}/buy/update/${buyId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': getAuthorizationToken(),
+      'Authorization': accessToken,
     },
     body: JSON.stringify(buy),
   }).then(response => response.json()),
 
-  delete: (buyId) => fetch(`${API_BASE_URL}/buy/delete/${buyId}`, {
+  delete: (buyId, accessToken) => fetch(`${API_BASE_URL}/buy/delete/${buyId}`, {
     method: 'DELETE',
     headers: {
-      'Authorization': getAuthorizationToken(),
+      'Authorization': accessToken,
     },
   }),
 
-  getAll: () => fetch(`${API_BASE_URL}/buy/all`, {
+  getAll: (accessToken) => fetch(`${API_BASE_URL}/buy/all`, {
     headers: {
-      'Authorization': getAuthorizationToken(),
+      'Authorization': accessToken,
     },
   }).then(response => response.json()),
 
-  getById: (buyId) => fetch(`${API_BASE_URL}/buy/search/${buyId}`, {
+  getById: (buyId, accessToken) => fetch(`${API_BASE_URL}/buy/search/${buyId}`, {
     headers: {
-      'Authorization': getAuthorizationToken(),
+      'Authorization': accessToken,
     },
   }).then(response => response.json()),
 };
 
 const userApi = {
     register: (user) => {
-      const token = getAuthorizationToken();
       return fetch(`${API_BASE_URL}/user/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
         },
         body: JSON.stringify(user),
       }).then(response => response.json());
@@ -69,175 +61,159 @@ const userApi = {
       }).then(response => response.json());
     },
   
-    getAllUsers: () => {
-      const token = getAuthorizationToken();
+    getAllUsers: (accessToken) => {
       return fetch(`${API_BASE_URL}/user/all`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    getById: (userId) => {
-      const token = getAuthorizationToken();
+    getById: (userId, accessToken) => {
       return fetch(`${API_BASE_URL}/user/search/${userId}`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    updateUser: (userId, userData) => {
-      const token = getAuthorizationToken();
+    updateUser: (userId, userData, accessToken) => {
       return fetch(`${API_BASE_URL}/user/update/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(userData),
       }).then(response => response.json());
     },
   
-    deleteUser: (userId) => {
-      const token = getAuthorizationToken();
+    deleteUser: (userId, accessToken) => {
       return fetch(`${API_BASE_URL}/user/delete/${userId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       });
     },
   };
   
   const toolApi = {
-    createTool: (toolData) => {
-      const token = getAuthorizationToken();
+    createTool: (toolData, accessToken) => {
       return fetch(`${API_BASE_URL}/tool/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(toolData),
       }).then(response => response.json());
     },
   
-    getAllTools: () => {
-      const token = getAuthorizationToken();
+    getAllTools: (accessToken) => {
       return fetch(`${API_BASE_URL}/tool/all`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    getToolById: (toolId) => {
-      const token = getAuthorizationToken();
+    getToolById: (toolId, accessToken) => {
       return fetch(`${API_BASE_URL}/tool/search/${toolId}`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    updateTool: (toolId, toolData) => {
-      const token = getAuthorizationToken();
+    updateTool: (toolId, toolData, accessToken) => {
       return fetch(`${API_BASE_URL}/tool/update/${toolId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(toolData),
       }).then(response => response.json());
     },
   
-    deleteTool: (toolId) => {
-      const token = getAuthorizationToken();
+    deleteTool: (toolId, accessToken) => {
       return fetch(`${API_BASE_URL}/tool/delete/${toolId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       });
     },
   };
   
   const getApi = {
-    add: (getData) => {
-      const token = getAuthorizationToken();
+    add: (getData, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(getData),
       }).then(response => response.json());
     },
   
-    getAll: () => {
-      const token = getAuthorizationToken();
+    getAll: (accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/all`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    getById: (getId) => {
-      const token = getAuthorizationToken();
+    getById: (getId, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/search/${getId}`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
   
-    update: (getId, getData) => {
-      const token = getAuthorizationToken();
+    update: (getId, getData, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/update/${getId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(getData),
       }).then(response => response.json());
     },
   
-    delete: (getId) => {
-      const token = getAuthorizationToken();
+    delete: (getId, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/delete/${getId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       });
     },
-    getByModelId: (modelId) => {
-      const token = getAuthorizationToken();
+    getByModelId: (modelId, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/byModel/${modelId}`, {
           headers: {
-              'Authorization': token,
+              'Authorization': accessToken,
           },
       }).then(response => response.json());
   },
 
-  getByToolId: (toolId) => {
-      const token = getAuthorizationToken();
+  getByToolId: (toolId, accessToken) => {
       return fetch(`${API_BASE_URL}/carOption/byTool/${toolId}`, {
           headers: {
-              'Authorization': token,
+              'Authorization': accessToken,
           },
       }).then(response => response.json());
   }
   };
   
   const modelApi = {
-    add: (modelData) => {
-        const token = getAuthorizationToken();
+    add: (modelData, accessToken) => {
+        const token = accessToken;
         const formData = new FormData();
         
         Object.keys(modelData).forEach(key => {
@@ -251,48 +227,44 @@ const userApi = {
         return fetch(`${API_BASE_URL}/model/add`, {
           method: 'POST',
           headers: {
-            'Authorization': token,
+            'Authorization': accessToken,
           },
           body: formData,
         }).then(response => response.json());
       },
 
-    getModelById: (modelId) => {
-      const token = getAuthorizationToken();
+    getModelById: (modelId, accessToken) => {
       return fetch(`${API_BASE_URL}/model/search/${modelId}`, {
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       }).then(response => response.json());
     },
 
-    getAllModels: () => {
-        const token = getAuthorizationToken();
+    getAllModels: (accessToken) => {
         return fetch(`${API_BASE_URL}/model/all`, {
           headers: {
-            'Authorization': token,
+            'Authorization': accessToken,
           },
         }).then(response => response.json());
       },
   
-    update: (modelId, modelData) => {
-      const token = getAuthorizationToken();
+    update: (modelId, modelData, accessToken) => {
       return fetch(`${API_BASE_URL}/model/update/${modelId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': accessToken,
         },
         body: JSON.stringify(modelData),
       }).then(response => response.json());
     },
   
-    delete: (modelId) => {
-      const token = getAuthorizationToken();
+    delete: (modelId, accessToken) => {
       return fetch(`${API_BASE_URL}/model/delete/${modelId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': token,
+          'Authorization': accessToken,
         },
       });
     },

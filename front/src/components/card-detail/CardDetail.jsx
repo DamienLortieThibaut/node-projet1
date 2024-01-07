@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import './CardDetail.css'
 import { getApi, toolApi } from '../../services/api';
+import { useAuth } from '../../utils/provider';
 
 function CardDetail({ car, onClose }) {
+    const { accessToken  } = useAuth();
 
     const [options, setOptions] = useState([]);
     const [totalOptionsPrice, setTotalOptionsPrice] = useState(0);
 
     useEffect(() => {
         if(car) {
-            getApi.getByModelId(car.id)
+            getApi.getByModelId(car.id, accessToken)
             .then(res => {
                 console.log(res)
                 //setOptions(res);

@@ -83,7 +83,7 @@ exports.getTools = async (req, res) => {
     const result = await CarOption.findAll({
       where: { modelId: modelId },
     });
-
+      
     const allToolsPromises = result.map(async (element) => {
       return await Tool.findByPk(element.toolId);
     });

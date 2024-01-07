@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { modelApi } from '../../services/api';
+import { modelApi, getApi, toolApi } from '../../services/api';
 import './Admin.css';
-import { getApi
- } from '../../services/api';
+import { useAuth } from '../../utils/provider';
 function Admin() {
+  const { accessToken} = useAuth();
   const [models, setModels] = useState([]);
   const [newModel, setNewModel] = useState({
     name: '',
@@ -13,21 +13,51 @@ function Admin() {
   });
   const [editModel, setEditModel] = useState(null);
   const [toolsEditModel, setToolsEditModel] = useState([]);
+  const [allTools, setAllTools] = useState([]);
+  const [fusionTab, setFusionTab] = useState([]);
+
+  const fusionTabFunc = (all, edit) => {
+    console.log(edit)
+    // Vérifier si 'edit' est un tableau
+    if (!Array.isArray(edit)) {
+      console.error("Le paramètre 'edit' n'est pas un tableau.");
+      return all; // Retourner 'all' tel quel en cas d'erreur
+    }
+  
+    let result = all.map((elem) => {
+      // Vérifier si l'ID de l'élément de allTools existe dans toolsEditModel
+      const hasMatchingId = edit.some((editElem) => editElem.id === elem.id);
+  
+      // Si l'ID existe, retourner l'élément de toolsEditModel
+      if (hasMatchingId) {
+        return edit.find((editElem) => editElem.id === elem.id);
+      } else {
+        // Sinon, retourner l'élément de allTools
+        return elem;
+      }
+    });
+    console.log(result)
+    setFusionTab(result);
+  };
+
 
   useEffect(() => {
-    fetchModels();
+    modelApi.getAllModels(accessToken).then(data => setModels(data));
+    toolApi.getAllTools(accessToken).then(data => {
+      setAllTools(data)
+    });
+
+    fusionTabFunc(allTools, toolsEditModel);    
+
+
   }, []);
 
   useEffect(() => {
     if(editModel) {
-      getApi.getByModelId(editModel.id).then(res => setToolsEditModel(res));
+      getApi.getByModelId(editModel.id, accessToken).then(res => setToolsEditModel(res));
     }
-
+    fusionTabFunc(allTools, toolsEditModel);    
   }, [editModel])
-
-  const fetchModels = () => {
-    modelApi.getAllModels().then(data => setModels(data));
-  };
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -48,7 +78,7 @@ function Admin() {
 
   const handleAddModel = () => {
     modelApi.add(newModel).then(() => {
-      fetchModels();
+      modelApi.getAllModels(accessToken).then(data => setModels(data));
       setNewModel({
         name: '',
         description: '',
@@ -66,7 +96,7 @@ function Admin() {
   const handleUpdateModel = () => {
     if (editModel) {
       modelApi.update(editModel.id, editModel).then(() => {
-        fetchModels();
+        modelApi.getAllModels(accessToken).then(data => setModels(data));
         setEditModel(null);
       });
     }
@@ -74,14 +104,14 @@ function Admin() {
 
   const handleDeleteModel = (modelId) => {
     modelApi.delete(modelId).then(() => {
-      fetchModels();
+      modelApi.getAllModels(accessToken).then(data => setModels(data));
     });
   };
 
   return (
-    <div className='admin d-flex'>
+    <div className='admin d-flex flex-column-reverse'>
 
-<div id='table-content' className='w-75 d-flex flex-column align-items-start'>
+<div id='table-content' className='w-100 d-flex flex-column align-items-start my-5'>
         <h3>Liste des modèles</h3>
         <table className='table'>
           <thead>
@@ -98,11 +128,11 @@ function Admin() {
               <tr key={model.id}>
                 <td>{model.name}</td>
                 <td>{model.description}</td>
-                <td>{model.prize}</td>
+                <td>{model.prize} €</td>
                 <td><img src={`http://localhost:8000/${model.image}`} alt={model.name} /></td>
                 <td>
-                  <button onClick={() => handleEditModel(model.id)}>Modifier</button>
-                  <button onClick={() => handleDeleteModel(model.id)}>Supprimer</button>
+                  <button className='btn btn-primary' onClick={() => handleEditModel(model.id)}>Modifier</button>
+                  <button className='btn btn-danger' onClick={() => handleDeleteModel(model.id)}>Supprimer</button>
                 </td>
               </tr>
             ))}
@@ -110,7 +140,8 @@ function Admin() {
         </table>
       </div>
 
-      <div className='w-25 ml-5'>
+      <div className='w-100 ml-5 d-flex justify-content-between'>
+        <div >
         <h3>{editModel ? 'Modifier le modèle' : 'Ajouter un nouveau modèle'}</h3>
          <form className='d-flex flex-column' style={{ maxWidth: '400px', margin: 'auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
           <label style={{ display: 'block', margin: '10px 0' }}>Nom:</label>
@@ -154,25 +185,32 @@ function Admin() {
             <button type='button' onClick={handleAddModel} style={{ background: '#008CBA', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Ajouter</button>
           )}
         </form>
-        <h3>{editModel ? 'Modifier les options' : 'Créer les options'}</h3>
-        {editModel ? (
-          <div>
-            {
-            toolsEditModel.map((t, eindex) => (
-              <div>
-                <p>{t.name}</p>
-                  <div className='close' onClick={onClose}>
-                    <i className='bx bx-x'></i>
-                </div>
-              </div>
-            ))
-            }
-          </div>
-        ) : (
-          <div>
-
-          </div>
-        )}
+        </div>
+        <div className='w-50'>
+          <h3>Modifier les options de base</h3>
+          <table className='table w-100'>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prix</th>
+              <th>Primaire</th>
+              <th>Activer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fusionTab.map(tool => (
+              <tr key={tool.id}>
+                <td>{tool.name}</td>
+                <td>{tool.prize} €</td>
+                <td></td>
+                <td>
+                  <input type="checkbox" />                
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
       </div>
 
     

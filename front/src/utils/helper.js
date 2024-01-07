@@ -19,10 +19,10 @@ export const hasRequiredRole = (requiredRoles, token) => {
     if (token) {
         const decodedToken = jwtDecode(token);
         const userRole = decodedToken.role; // Utiliser le champ 'roles' plutôt que 'role'
-
-        // Vérifier si l'utilisateur a au moins l'un des rôles requis
-        return requiredRoles.some(role => userRole.includes(role));
+        if (userRole) {
+            return requiredRoles.includes(userRole);
+        }
     }
 
     return false;
-}
+};
