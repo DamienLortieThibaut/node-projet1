@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Header.css';
 import { isAuthenticated } from '../../utils/helper';
 import { useAuth } from '../../utils/provider';
-
+import { hasRequiredRole } from '../../utils/helper';
 function Header() {
   const { accessToken, updateAccessToken } = useAuth();
 
@@ -20,8 +20,8 @@ function Header() {
         </div>
         <ul>
           <li><Link to="/">Home</Link></li>
-          <li><Link to="/admin">Admin</Link></li>
-          <li><Link to="/accounting">Comptabilité</Link></li>
+          { hasRequiredRole(['admin'], accessToken) && (<li><Link to="/admin">Admin</Link></li>)}
+          { hasRequiredRole(['admin, accounter'], accessToken) && (<li><Link to="/accounting">Comptabilité</Link></li>)}
         </ul>
       </div>
       <div className='action'>

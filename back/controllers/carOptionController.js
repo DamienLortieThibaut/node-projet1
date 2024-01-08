@@ -88,7 +88,7 @@ exports.getTools = async (req, res) => {
     if (!carOptions || carOptions.length === 0) {
       return res
         .status(404)
-        .json({ error: "CarOptions non trouvés pour l'ID de modèle donné" });
+        .json([]);
     }
 
     const toolsDetails = await Promise.all(

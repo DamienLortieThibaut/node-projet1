@@ -2,27 +2,67 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Custom.css";
-import { modelApi, getApi } from "../../services/api";
+import { modelApi, getApi, buyApi } from "../../services/api";
+import { useAuth } from "../../utils/provider";
 
 function Custom() {
   const { id } = useParams();
-  const [Tools, setTools] = useState([]);
+  const [tools, setTools] = useState([]);
+  const [car, setCar] = useState(null)
+  const [sum, setSum] = useState(0);
+  const [totalPrize, setTotalPrize] = useState(0)
+  const { accessToken} = useAuth();
 
   useEffect(() => {
     const fetchPrimaryTools = async () => {
       try {
-        const response = await getApi.getByModelId(id);
-        setTools(response);
+        const response = await getApi.getByModelId(id, accessToken);
+        
+        // Add the 'selected' field to each object in the array
+        const modifiedResponse = response.map((tool) => ({
+          ...tool,
+          selected: false, // You can set the initial value as per your requirement
+        }));
+    
+        setTools(modifiedResponse);
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des outils obligatoires:",
-          error
-        );
+        console.error("Error fetching primary tools:", error);
       }
     };
-
     fetchPrimaryTools();
+
+    modelApi.getModelById(id, accessToken).then(data => setCar(data));
   }, []);
+
+  useEffect(() => {
+    if(car){
+      totalPrizeFunc(car);
+    }
+    
+  }, [tools, car]);
+  
+
+  const handleDivClick = (toolId) => {
+    setTools((prevTools) => {
+      return prevTools.map((tool) =>
+        tool.id === toolId ? { ...tool, selected: !tool.selected } : tool
+      );
+    });
+  };
+
+  const totalPrizeFunc = (elem) => {
+    const sum = tools.reduce((accumulator, tool) => {
+      if (tool.is_primary || tool.selected) {
+        return accumulator + tool.prize;
+      }
+      return accumulator;
+    }, elem.prize);
+    setTotalPrize(sum);
+  };
+
+  const buyCar = () => {
+    buyApi.add().then(data => data);
+  }
 
   return (
     <div className="custom">
@@ -33,7 +73,7 @@ function Custom() {
         <div>
           <h3>Kit de base</h3>
           <div>
-            {Tools.map(tool => (
+            {tools.map(tool => (
               tool.is_primary ? (
                 <div key={tool.id}>
                   <p>Nom: {tool.name}</p>
@@ -47,10 +87,19 @@ function Custom() {
         </div>
         <div>
           <h3>Options</h3>
-          <div></div>
+          <div>
+          {tools.map((tool) => (
+        !tool.is_primary ? (
+          <div key={tool.id} onClick={() => handleDivClick(tool.id)}>
+            <p>Nom: {tool.name}</p>
+            <p>Prix: {tool.prize}</p>
+          </div>
+        ) : null
+      ))}
+          </div>
         </div>
         <div>
-          <p>Prize: </p>
+          <p>Prize: {totalPrize}€</p>
           <button>Acheter</button>
         </div>
       </div>

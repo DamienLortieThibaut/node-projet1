@@ -19,6 +19,7 @@ export const hasRequiredRole = (requiredRoles, token) => {
     if (token) {
         const decodedToken = jwtDecode(token);
         const userRole = decodedToken.role; // Utiliser le champ 'roles' plutôt que 'role'
+        
         if (userRole) {
             return requiredRoles.includes(userRole);
         }

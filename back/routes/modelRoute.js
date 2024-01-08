@@ -16,7 +16,7 @@ router.get(
 );
 router.get(
   "/search/:id",
-  modelController.readModel
+  modelController.getModelById
 );
 router.put(
   "/update/:id",
