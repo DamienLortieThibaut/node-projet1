@@ -34,6 +34,7 @@ function Admin() {
         return elem;
       }
     });
+    console.log(result)
     setFusionTab(result);
   };
 
@@ -44,10 +45,13 @@ function Admin() {
       setAllTools(data)
     });
 
-    fusionTabFunc(allTools, toolsEditModel);    
 
 
   }, []);
+
+  useEffect(() =>  {
+    fusionTabFunc(allTools, toolsEditModel);    
+  }, [toolsEditModel, allTools]);
 
   useEffect(() => {
     if(editModel) {
@@ -104,10 +108,43 @@ function Admin() {
   };
 
   const handleDeleteModel = (modelId) => {
-    modelApi.delete(modelId).then(() => {
+    modelApi.delete(modelId, accessToken).then(() => {
       modelApi.getAllModels(accessToken).then(data => setModels(data));
     });
   };
+
+  const togglePrimary = (clickedTool, model) => {
+    console.log('click->',clickedTool)
+    if (model && clickedTool) {
+      let body = {
+        toolId: clickedTool.id,
+        is_primary: !clickedTool.is_primary,
+        modelId: model.id,
+      };
+  
+      getApi.update(body, accessToken).then((data) => {
+        getApi.getByModelId(model.id, accessToken).then((res) => setToolsEditModel(res));
+      });
+    }
+  };
+
+  const toogleActivate = (clickedTool, model) => {
+    let body = {
+      toolId: clickedTool.id,
+      is_primary: true,
+      modelId: model.id,
+    };
+    if(clickedTool.is_primary === undefined){
+      getApi.add(body, accessToken).then((data) => {
+        getApi.getByModelId(model.id, accessToken).then((res) => setToolsEditModel(res));
+      });  
+
+    } else {
+      getApi.delete(clickedTool.id, model.id).then((data) => {
+        getApi.getByModelId(model.id, accessToken).then((res) => setToolsEditModel(res));
+      });
+    }
+  }
 
   return (
     <div className='admin d-flex flex-column-reverse'>
@@ -194,7 +231,7 @@ function Admin() {
             <tr>
               <th>Nom</th>
               <th>Prix</th>
-              <th>Primaire</th>
+              <th>Option obligatoire</th>
               <th>Activer</th>
             </tr>
           </thead>
@@ -204,10 +241,16 @@ function Admin() {
                 <td>{tool.name}</td>
                 <td>{tool.prize} €</td>
                 <td>                   
-                  <input type="checkbox"  checked={tool.is_primary !== undefined ? true : false}/>                
-                </td>
+                  <input
+                    type="checkbox"
+                    onClick={(e) => togglePrimary(tool, editModel)}
+                    checked={tool.is_primary !== undefined ? tool.is_primary : false}
+                  />                
+                  </td>
                 <td>
-                  <input type="checkbox"  checked={tool.is_primary !== undefined ? true : false}/>                
+                  <input type="checkbox"
+                  onClick={(e) => toogleActivate(tool, editModel)}
+                    checked={tool.is_primary !== undefined ? true : false}/>                
                 </td>
               </tr>
             ))}

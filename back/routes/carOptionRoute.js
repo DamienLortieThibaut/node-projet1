@@ -16,12 +16,26 @@ router.delete(
   middleware.isAdmin,
   carOptionController.delete
 );
+router.delete(
+  "/deleteByToolAndModel/:toolId/:modelId",
+  middleware.authenticator,
+  middleware.isAdmin,
+  carOptionController.deleteByToolAndModelId
+);
+
 router.put(
   "/update/:id",
   middleware.authenticator,
   middleware.isAdmin,
   carOptionController.update
 );
+router.put(
+  "/updateByToolAndModel",
+  middleware.authenticator,
+  middleware.isAdmin,
+  carOptionController.updateByToolAndModelId
+);
+
 router.get(
   "/search/:id",
   middleware.authenticator,

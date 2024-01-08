@@ -21,7 +21,7 @@ function Header() {
         <ul>
           <li><Link to="/">Home</Link></li>
           { hasRequiredRole(['admin'], accessToken) && (<li><Link to="/admin">Admin</Link></li>)}
-          { hasRequiredRole(['admin, accounter'], accessToken) && (<li><Link to="/accounting">Comptabilité</Link></li>)}
+          { hasRequiredRole(['accounter', 'admin'], accessToken) && ( <li><Link to="/accounting">Comptabilité</Link></li> ) }
         </ul>
       </div>
       <div className='action'>

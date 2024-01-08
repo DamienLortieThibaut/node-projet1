@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import "./Custom.css";
 import { modelApi, getApi, buyApi } from "../../services/api";
 import { useAuth } from "../../utils/provider";
+import { getIdFromToken } from "../../utils/helper";
 
 function Custom() {
   const { id } = useParams();
@@ -61,8 +62,26 @@ function Custom() {
   };
 
   const buyCar = () => {
-    buyApi.add().then(data => data);
-  }
+    const currentDate = new Date().toISOString();
+  
+    const body = {
+      prize: totalPrize,
+      userId: getIdFromToken(accessToken),
+      modelId: car.id,
+      date: currentDate,
+    };
+    console.log(body)
+  
+    buyApi.add(body, accessToken)
+      .then(data => {
+        console.log("Car purchased successfully:", data);
+        // Handle any additional logic after successful purchase
+      })
+      .catch(error => {
+        console.error("Error purchasing car:", error);
+        // Handle error scenarios
+      });
+  };
 
   return (
     <div className="custom">
@@ -100,7 +119,7 @@ function Custom() {
         </div>
         <div>
           <p>Prize: {totalPrize}€</p>
-          <button>Acheter</button>
+          <button onClick={buyCar}>Acheter</button>
         </div>
       </div>
     </div>

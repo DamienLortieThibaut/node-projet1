@@ -137,13 +137,13 @@ const userApi = {
       }).then(response => response.json());
     },
   
-    deleteTool: (toolId, accessToken) => {
-      return fetch(`${API_BASE_URL}/tool/delete/${toolId}`, {
+    deleteTool: (toolId, modelId, accessToken) => {
+      return fetch(`${API_BASE_URL}/tool/deleteByToolAndModel/${toolId}/${modelId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': accessToken,
         },
-      });
+      }).then(response => response.json());
     },
   };
   
@@ -175,8 +175,8 @@ const userApi = {
       }).then(response => response.json());
     },
   
-    update: (getId, getData, accessToken) => {
-      return fetch(`${API_BASE_URL}/carOption/update/${getId}`, {
+    update: (getData, accessToken) => {
+      return fetch(`${API_BASE_URL}/carOption/updateByToolAndModel`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

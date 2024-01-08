@@ -27,3 +27,13 @@ export const hasRequiredRole = (requiredRoles, token) => {
 
     return false;
 };
+
+export const getIdFromToken = (token) => {
+    if(token) {
+        const decodedToken = jwtDecode(token);
+        const userid = decodedToken.id;
+        if (userid) {
+            return userid;
+        }
+    }
+}

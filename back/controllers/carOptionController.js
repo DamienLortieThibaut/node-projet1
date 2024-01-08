@@ -31,6 +31,34 @@ exports.delete = async (req, res) => {
   }
 };
 
+// DELETE by tool and model id
+exports.deleteByToolAndModelId = async (req, res) => {
+  const toolId = req.params.toolId;
+  const modelId = req.params.modelId;
+
+  try {
+    // Trouver CarOption en fonction de toolId et modelId
+    const carOption = await CarOption.findOne({
+      where: {
+        toolId: toolId,
+        modelId: modelId,
+      },
+    });
+
+    if (carOption) {
+      // Si trouvé, supprimer la CarOption
+      await carOption.destroy();
+      res.status(200).json("CarOption successfully deleted");
+    } else {
+      // Si non trouvé, retourner une erreur 404
+      res.status(404).json({ error: "CarOption not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting CarOption: ", error);
+    res.status(500).json({ error: "Error deleting CarOption" });
+  }
+};
+
 // UPDATE du CRUD
 exports.update = async (req, res) => {
   const getId = req.params.id;
@@ -46,6 +74,30 @@ exports.update = async (req, res) => {
   } catch (error) {
     console.error("Error updating purchase : ", error);
     res.status(500).json({ error: "Error updating purchase" });
+  }
+};
+
+exports.updateByToolAndModelId = async (req, res) => {
+  const toolId = req.body.toolId;
+  const modelId = req.body.modelId;
+  console.log(toolId, modelId)
+  try {
+    const carOption = await CarOption.findOne({
+      where: {
+        toolId: toolId,
+        modelId: modelId,
+      },
+    });
+
+    if (carOption) {
+      await carOption.update(req.body);
+      res.status(200).json(carOption);
+    } else {
+      res.status(404).json({ error: "CarOption not found" });
+    }
+  } catch (error) {
+    console.error("Error updating CarOption: ", error);
+    res.status(500).json({ error: "Error updating CarOption" });
   }
 };
 

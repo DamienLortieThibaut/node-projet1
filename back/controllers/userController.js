@@ -39,6 +39,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ where: { email: email } });
+    console.log(existingUser.dataValues)
     if (!existingUser) {
       return res
         .status(401)
@@ -50,7 +51,7 @@ exports.login = async (req, res) => {
         .status(401)
         .json({ message: "Email ou mot de passe incorrect." });
     }
-    const token = jwt.sign({ email:email, id: existingUser._id, role: existingUser.role }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ email:email, id: existingUser.dataValues.id, role: existingUser.role }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
     res.status(200).json({ token });
