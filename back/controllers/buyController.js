@@ -1,7 +1,8 @@
 const Buy = require("../models/buyModel");
 const User = require("../models/userModel");
 const Model = require("../models/modelModel");
-// Ajouter un nouvel achat
+
+//--------- Create a buy ---------//
 exports.add = async (req, res) => {
   try {
     const buy = req.body;
@@ -13,7 +14,7 @@ exports.add = async (req, res) => {
   }
 };
 
-// Supprimer un achat
+//--------- Delete a tool ---------//
 exports.delete = async (req, res) => {
   const buyId = req.params.id;
   try {
@@ -30,7 +31,7 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Mise à jour d'un achat
+//--------- Update a tool ---------//
 exports.update = async (req, res) => {
   const buyId = req.params.id;
   const buy = req.body;
@@ -48,7 +49,7 @@ exports.update = async (req, res) => {
   }
 };
 
-// Afficher tous les achats
+//--------- Get all tools ---------//
 exports.getAll = async (req, res) => {
   try {
     const results = await Buy.findAll();
@@ -70,14 +71,12 @@ exports.getAll = async (req, res) => {
 
     res.status(200).json(buyDetails);
   } catch (error) {
-    console.error("Erreur lors de la récupération des achats : ", error);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération des achats" });
+    console.error("Error retrieving the purchase:", error);
+    res.status(500).json({ error: "Error retrieving the purchase" });
   }
 };
 
-// Récupérer un achat par id
+//--------- Get a tool by id ---------//
 exports.getById = async (req, res) => {
   const buyId = req.params.id;
   try {

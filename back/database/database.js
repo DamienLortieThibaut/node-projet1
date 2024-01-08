@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize')
 
 const sequelize = new Sequelize('nodeipssiprojet', 'root', '', {
-    port: 3306,
+    port: 3307,
     host: 'localhost',
-    dialect: 'mysql'
+    dialect: 'mariadb'
 });
 
 sequelize.authenticate().then(() => {
-    console.log('Authentification réussi');
+    console.log('Authentification successful');
 }).catch((err) => {
     console.log(err);
 })

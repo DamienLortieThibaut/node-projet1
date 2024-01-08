@@ -8,27 +8,34 @@ require("dotenv").config();
 exports.register = async (req, res) => {
   try {
     const { firstname, lastname, email, password } = req.body;
-    console.log(firstname, lastname, email, password)
+    
+    // Check if the email is already in use
     const existingUser = await User.findOne({ where: { email: email } });
     if (existingUser) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
+      return res.status(400).json({ message: "This email is already in use." });
     }
+
+    // Hash the password for security
     const hash = await bcrypt.hashSync(password, 10);
+
     await User.create({
       firstname,
       lastname,
       email,
       password: hash,
     });
-    // Renvoie jwt token pour la signature
+
+    // Generate a JWT token
     const token = jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
-    res.status(201).json({ token: token }); // Correction ici pour utiliser le statut 201
+
+    // Return the JWT token as a response
+    res.status(201).json({ token: token });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de l'enregistrement de l'utilisateur" });
+      .json({ message: "Error during user registration" });
   }
 };
 
@@ -38,19 +45,24 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Find the user with the provided email
     const existingUser = await User.findOne({ where: { email: email } });
-    console.log(existingUser.dataValues)
     if (!existingUser) {
       return res
         .status(401)
-        .json({ message: "Email ou mot de passe incorrect." });
+        .json({ message: "Incorrect email or password" });
     }
+
+    // Compare the provided password with the hashed password
     const hash = bcrypt.compareSync(password, existingUser.password);
     if (!hash) {
       return res
         .status(401)
-        .json({ message: "Email ou mot de passe incorrect." });
+        .json({ message: "Incorrect email or password" });
     }
+
+    // Generate a JWT token 
     const token = jwt.sign({ email:email, id: existingUser.dataValues.id, role: existingUser.role }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
@@ -58,7 +70,7 @@ exports.login = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de l'authentification de l'utilisateur" });
+      .json({ message: "Error during user authentication" });
   }
 };
 
@@ -71,7 +83,8 @@ exports.getAllUsers = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des utilisateurs" });
+      .json({
+        message: "Error recovering users" });
   }
 };
 
@@ -84,13 +97,13 @@ exports.getAllById = async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      res.status(404).json({ message: "Utilisateur non trouvé" });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'utilisateur:", error);
+    console.error("Error recovering user:", error);
     res
       .status(500)
-      .json({ error: "Erreur lors de la récupération de l'utilisateur" });
+      .json({ error: "Error recovering user" });
   }
 };
 
@@ -101,13 +114,13 @@ exports.updateUser = async (req, res) => {
     const userId  = req.params.id; // Supposons que l'ID de l'utilisateur à modifier est transmis dans les paramètres de l'URL
     const { firstname, lastname, email, password } = req.body;
 
-    // Vérifier si l'utilisateur à modifier existe dans la base de données
+    // Check if the user to update exists
     const userToUpdate = await User.findByPk(userId);
     if (!userToUpdate) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Mettre à jour les informations de l'utilisateur
+    // Update user information if provided
     if (firstname) {
       userToUpdate.firstname = firstname;
     }
@@ -118,20 +131,21 @@ exports.updateUser = async (req, res) => {
       userToUpdate.email = email;
     }
     if (password) {
+      // Hash the provided password before updating
       const hash = await bcrypt.hashSync(password, 10);
       userToUpdate.password = hash;
     }
 
-    // Sauvegarder les modifications dans la base de données
+    // Save the modification
     await userToUpdate.save();
 
     res
       .status(200)
-      .json({ message: "Informations utilisateur mises à jour avec succès" });
+      .json({ message: "User information updated successfully" });
   } catch (error) {
     res.status(500).json({
       message:
-        "Erreur lors de la modification des informations de l'utilisateur",
+        "Error updating user information",
     });
   }
 };
@@ -142,19 +156,19 @@ exports.deleteUser = async (req, res) => {
   try {
     const userId  = req.params.id; // Supposons que l'ID de l'utilisateur à supprimer est transmis dans les paramètres de l'URL
 
-    // Vérifier si l'utilisateur à supprimer existe dans la base de données
+    // Check if the user to delete exists
     const userToDelete = await User.findByPk(userId);
     if (!userToDelete) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Supprimer l'utilisateur de la base de données
+    // Delete the user from database
     await userToDelete.destroy();
 
-    res.status(200).json({ message: "Utilisateur supprimé avec succès" });
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de la suppression de l'utilisateur" });
+      .json({ message: "Error deleting user" });
   }
 };

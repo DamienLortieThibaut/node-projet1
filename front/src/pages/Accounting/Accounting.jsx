@@ -13,6 +13,7 @@ function Accounting() {
   const [yearsOptions, setYearsOptions] = useState([]);
   const [totalPrize, setTotalPrize] = useState(0);
 
+  // Format month name 
   const formatMonth = (month) => {
     const monthNames = [
       "Janvier",
@@ -37,6 +38,7 @@ function Accounting() {
     return "";
   };
 
+  // Format date to locale-specific
   const formattedDate = (date) => {
     const formattedDateString = new Date(date).toLocaleString("fr-FR", {
       day: "numeric",
@@ -51,6 +53,7 @@ function Accounting() {
     return formattedDateString;
   };
 
+  // Update total prize when filters or purchases change
   useEffect(() => {
     const filteredBuys = buys.filter((buy) => {
       const buyDate = new Date(buy.date);
@@ -69,6 +72,7 @@ function Accounting() {
     calculateTotalPrize(filteredBuys);
   }, [buys, selectedMonth, selectedYear]);
 
+  // Handle changes in month and year filters
   const handleFilterChange = (type, value) => {
     if (type === "month") {
       setSelectedMonth(value);
@@ -77,19 +81,20 @@ function Accounting() {
     }
   };
 
+  // Calculate total prize
   const calculateTotalPrize = (buysData) => {
     const total = buysData.reduce((acc, buy) => acc + buy.prize, 0);
     setTotalPrize(total.toFixed(2));
   };
 
   useEffect(() => {
-    // Charger tous les achats au montage initial
+    // Load all purchases
     buyApi
       .getAll(accessToken)
       .then((data) => {
         setBuys(data);
 
-        // Extraire les mois et années uniques des dates des achats
+        // Extract unique months and years from purchase dates
         const uniqueMonths = [
           ...new Set(data.map((buy) => new Date(buy.date).getMonth() + 1)),
         ];
@@ -97,16 +102,16 @@ function Accounting() {
           ...new Set(data.map((buy) => new Date(buy.date).getFullYear())),
         ];
 
-        // Tri des mois et années de manière croissante
+        // Sort months and years in ASC
         uniqueMonths.sort((a, b) => a - b);
         uniqueYears.sort((a, b) => a - b);
 
-        // Ajout des options "Tous les mois" et "Toutes les années"
+        // Add options for "All Month" and "All years"
         setMonthsOptions(["00", ...uniqueMonths]);
         setYearsOptions(["00", ...uniqueYears]);
       })
       .catch((error) =>
-        console.error("Erreur lors de la récupération des achats:", error)
+        console.error("Error retrieving purchased", error)
       );
   }, [accessToken]);
 

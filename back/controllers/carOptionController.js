@@ -2,7 +2,7 @@ const CarOption = require("../models/carOptionModel");
 const Model = require("../models/modelModel");
 const Tool = require("../models/toolModel");
 
-// CREATE du CRUD
+//--------- Create a carOption ---------//
 exports.add = async (req, res) => {
   try {
     const buy = req.body;
@@ -14,7 +14,7 @@ exports.add = async (req, res) => {
   }
 };
 
-// DELETE du CRUD
+//--------- Delete a carOption ---------//
 exports.delete = async (req, res) => {
   const getId = req.params.id;
   try {
@@ -31,13 +31,13 @@ exports.delete = async (req, res) => {
   }
 };
 
-// DELETE by tool and model id
+//--------- Delete a carOption by Tool and Model id ---------//
 exports.deleteByToolAndModelId = async (req, res) => {
   const toolId = req.params.toolId;
   const modelId = req.params.modelId;
 
   try {
-    // Trouver CarOption en fonction de toolId et modelId
+    // Find CarOption based on toolId and modelId
     const carOption = await CarOption.findOne({
       where: {
         toolId: toolId,
@@ -46,11 +46,11 @@ exports.deleteByToolAndModelId = async (req, res) => {
     });
 
     if (carOption) {
-      // Si trouvé, supprimer la CarOption
+      // If found, remove the CarOption
       await carOption.destroy();
       res.status(200).json("CarOption successfully deleted");
     } else {
-      // Si non trouvé, retourner une erreur 404
+      // If not found, return a 404 error
       res.status(404).json({ error: "CarOption not found" });
     }
   } catch (error) {
@@ -59,7 +59,7 @@ exports.deleteByToolAndModelId = async (req, res) => {
   }
 };
 
-// UPDATE du CRUD
+//--------- Update a carOption by id---------//
 exports.update = async (req, res) => {
   const getId = req.params.id;
   const get = req.body;
@@ -77,6 +77,7 @@ exports.update = async (req, res) => {
   }
 };
 
+//--------- Update a carOption by tool id and model id---------//
 exports.updateByToolAndModelId = async (req, res) => {
   const toolId = req.body.toolId;
   const modelId = req.body.modelId;
@@ -101,7 +102,7 @@ exports.updateByToolAndModelId = async (req, res) => {
   }
 };
 
-// Afficher les éléments
+//--------- Get all carOption ---------//
 exports.getAll = async (req, res) => {
   try {
     const result = await CarOption.findAll();
@@ -112,7 +113,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Afficher les éléments selon un id
+//--------- Get a carOption by id ---------//
 exports.getById = async (req, res) => {
   const getId = req.params.id;
   try {
@@ -128,7 +129,7 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Chercher les Tools à partir de l'ID d'un Model
+//--------- Get a toolsdetails by model id ---------//
 exports.getTools = async (req, res) => {
   const modelId = req.params.modelId;
 
@@ -167,21 +168,24 @@ exports.getTools = async (req, res) => {
   }
 };
 
-// Chercher les Models à partir de l'ID d'un Tools
+//--------- Get a modelsdetails by tool id ---------//
 exports.getModels = async (req, res) => {
   const toolId = req.params.toolId;
 
+  // Find all CarOptions based on the provided toolId
   try {
     const carOptions = await CarOption.findAll({
       where: { toolId: toolId },
     });
 
+    // Check if CarOptions were found
     if (!carOptions || carOptions.length === 0) {
       return res
         .status(404)
         .json({ error: "CarOptions non trouvés pour l'ID d'outil donné" });
     }
 
+    // Fetch details for each model associated with the found CarOptions
     const modelsDetails = await Promise.all(
       carOptions.map(async (carOption) => {
         const model = await Model.findByPk(carOption.modelId);
