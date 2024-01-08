@@ -1,6 +1,6 @@
 // Custom.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./Custom.css";
 import { modelApi, getApi, buyApi } from "../../services/api";
 import { useAuth } from "../../utils/provider";
@@ -12,19 +12,20 @@ function Custom() {
   const [car, setCar] = useState(null)
   const [sum, setSum] = useState(0);
   const [totalPrize, setTotalPrize] = useState(0)
-  const { accessToken} = useAuth();
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPrimaryTools = async () => {
       try {
         const response = await getApi.getByModelId(id, accessToken);
-        
+
         // Add the 'selected' field to each object in the array
         const modifiedResponse = response.map((tool) => ({
           ...tool,
           selected: false, // You can set the initial value as per your requirement
         }));
-    
+
         setTools(modifiedResponse);
       } catch (error) {
         console.error("Error fetching primary tools:", error);
@@ -36,12 +37,12 @@ function Custom() {
   }, []);
 
   useEffect(() => {
-    if(car){
+    if (car) {
       totalPrizeFunc(car);
     }
-    
+
   }, [tools, car]);
-  
+
 
   const handleDivClick = (toolId) => {
     setTools((prevTools) => {
@@ -63,7 +64,7 @@ function Custom() {
 
   const buyCar = () => {
     const currentDate = new Date().toISOString();
-  
+
     const body = {
       prize: totalPrize,
       userId: getIdFromToken(accessToken),
@@ -71,54 +72,68 @@ function Custom() {
       date: currentDate,
     };
     console.log(body)
-  
+
     buyApi.add(body, accessToken)
       .then(data => {
-        console.log("Car purchased successfully:", data);
-        // Handle any additional logic after successful purchase
+        navigate("/");
       })
       .catch(error => {
         console.error("Error purchasing car:", error);
-        // Handle error scenarios
       });
   };
 
   return (
-    <div className="custom">
-      <div>
-        <img />
-      </div>
-      <div>
-        <div>
-          <h3>Kit de base</h3>
+    <div className="custom d-flex">
+      <div className="w-50 d-flex flex-column justify-content-between">
+        {car &&
+          (
+            <div className="car">
+              <img src={`http://localhost:8000/${car.image}`} alt={car.name} />
+                <h5>{car.name}</h5>
+              <p>{car.description}</p>
+            </div>
+          )}
+
+        <div className="equipement">
+          <h3>Equipement</h3>
           <div>
             {tools.map(tool => (
               tool.is_primary ? (
-                <div key={tool.id}>
-                  <p>Nom: {tool.name}</p>
-                  <p>Prix: { tool.prize}</p>
-                </div>
+                <p key={tool.id}>{tool.name}</p>
               ) : null
             ))
 
             }
           </div>
         </div>
+      </div>
+      <div className="tools-option w-50 d-flex flex-column justify-content-between h-100">
         <div>
-          <h3>Options</h3>
-          <div>
-          {tools.map((tool) => (
-        !tool.is_primary ? (
-          <div key={tool.id} onClick={() => handleDivClick(tool.id)}>
-            <p>Nom: {tool.name}</p>
-            <p>Prix: {tool.prize}</p>
-          </div>
-        ) : null
-      ))}
+          <h3>Sélectioner vos options</h3>
+          <div className="w-100">
+            {tools.map((tool) => (
+              !tool.is_primary ? (
+                <div
+                  className={`detailTool d-flex justify-content-between align-items-center ${tool.selected ? 'selected' : ''}`}
+                  key={tool.id}
+                  onClick={() => handleDivClick(tool.id)}
+                >
+                  <div className="d-flex align-items-center">
+                    {tool.selected ? (<i className='bx bx-check' ></i>) : (<i className='bx bx-plus'></i>)}
+                    <p>{tool.name}</p>
+                  </div>
+                  <p>{tool.prize} €</p>
+                </div>
+              ) : null
+            ))}
           </div>
         </div>
         <div>
-          <p>Prize: {totalPrize}€</p>
+          <div className="w-100 d-flex justify-content-between align-items-center">
+            <p>Total</p>
+            <p className="total">{totalPrize}€</p>
+
+          </div>
           <button onClick={buyCar}>Acheter</button>
         </div>
       </div>

@@ -4,3 +4,35 @@
     color: white;
     padding: 125px;
 }
+
+.custom img {
+    width: 100%;
+}
+
+.custom .selected {
+    background: rgba(24, 206, 64, 0.2);
+}
+
+.custom .total {
+    font-size: 30px;
+}
+
+.custom .detailTool p{
+    font-size: 20px;
+}
+
+.custom button {
+    width: 100%;
+    padding: 15px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    background: #FDD526;
+    font-weight: 500;
+}
+.custom .tools-option i{
+    margin-right: 10px !important;
+}
+.custom .tools-option {
+    margin-left: 15px !important;
+}
