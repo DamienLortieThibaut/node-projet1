@@ -1,5 +1,6 @@
 const Buy = require("../models/buyModel");
-
+const User = require("../models/userModel");
+const Model = require("../models/modelModel");
 // Ajouter un nouvel achat
 exports.add = async (req, res) => {
   try {
@@ -50,11 +51,29 @@ exports.update = async (req, res) => {
 // Afficher tous les achats
 exports.getAll = async (req, res) => {
   try {
-    const result = await Buy.findAll();
-    res.status(200).json(result);
+    const results = await Buy.findAll();
+
+    const buyDetails = await Promise.all(
+      results.map(async (result) => {
+        const model = await Model.findByPk(result.modelId);
+        const user = await User.findByPk(result.userId);
+        return {
+          id: result.id,
+          prize: result.prize,
+          date: result.date,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          model: model.name,
+        };
+      })
+    );
+
+    res.status(200).json(buyDetails);
   } catch (error) {
-    console.error("Error retrieving purchases : ", error);
-    res.status(500).json({ error: "Error retrieving purchases" });
+    console.error("Erreur lors de la récupération des achats : ", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des achats" });
   }
 };
 

@@ -151,7 +151,7 @@ function Admin() {
             name='name'
             value={editModel ? editModel.name : newModel.name}
             onChange={handleInputChange}
-            style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+            style={{ width: '100%', padding: '10px', marginBottom: '10px' }} required
           />
 
           <label style={{ display: 'block', margin: '10px 0' }}>Description:</label>
@@ -160,7 +160,7 @@ function Admin() {
             name='description'
             value={editModel ? editModel.description : newModel.description}
             onChange={handleInputChange}
-            style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+            style={{ width: '100%', padding: '10px', marginBottom: '10px' }} required
           />
 
           <label style={{ display: 'block', margin: '10px 0' }}>Prix:</label>
@@ -169,7 +169,7 @@ function Admin() {
             name='prize'
             value={editModel ? editModel.prize : newModel.prize}
             onChange={handleInputChange}
-            style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+            style={{ width: '100%', padding: '10px', marginBottom: '10px' }} required
           />
 
           <label style={{ display: 'block', margin: '10px 0' }}>Image:</label>
