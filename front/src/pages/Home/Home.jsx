@@ -27,7 +27,7 @@ function Home() {
     <div className='home'>
       {showCardDetail && <CardDetail car={currentDetail} onClose={handleCloseCardDetail} />}
       <div className='main'>
-        <button>Acheter maintenant</button>
+        {/* <button>Acheter maintenant</button> */}
         <div className='detail'>
           <div className='barre-style'></div>
           <h4>Raudi R1</h4>

@@ -20,7 +20,7 @@ function CardCar({ car, loadDetail, showCard }) {
 
   return (
     <div className="card-car" onClick={handleCardClick}>
-      <img src={`http://localhost:8000/${car.image}`} alt={car.name} />
+      {car.image && <img src={`http://localhost:8000/${car.image}`} alt={car.name} />}
       <div className="info">
         <h5 className="m-0">{car.name}</h5>
         <p className="m-0">{car.prize}€</p>

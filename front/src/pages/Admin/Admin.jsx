@@ -34,7 +34,6 @@ function Admin() {
         return elem;
       }
     });
-    console.log(result)
     setFusionTab(result);
   };
 
@@ -96,7 +95,7 @@ function Admin() {
 
   const handleUpdateModel = () => {
     if (editModel) {
-      modelApi.update(editModel.id, editModel).then(() => {
+      modelApi.update(editModel.id, editModel, accessToken).then(() => {
         modelApi.getAllModels(accessToken).then(data => setModels(data));
         setEditModel([null]);
         setToolsEditModel([]);
@@ -114,7 +113,6 @@ function Admin() {
   };
 
   const togglePrimary = (clickedTool, model) => {
-    console.log('click->',clickedTool)
     if (model && clickedTool) {
       let body = {
         toolId: clickedTool.id,
@@ -131,7 +129,7 @@ function Admin() {
   const toogleActivate = (clickedTool, model) => {
     let body = {
       toolId: clickedTool.id,
-      is_primary: true,
+      is_primary: false,
       modelId: model.id,
     };
     if(clickedTool.is_primary === undefined){
@@ -140,7 +138,7 @@ function Admin() {
       });  
 
     } else {
-      getApi.delete(clickedTool.id, model.id).then((data) => {
+      getApi.delete(clickedTool.id, model.id, accessToken).then((data) => {
         getApi.getByModelId(model.id, accessToken).then((res) => setToolsEditModel(res));
       });
     }
@@ -224,15 +222,17 @@ function Admin() {
           )}
         </form>
         </div>
-        <div className='w-50'>
+        {
+          editModel && (
+            <div className='w-50'>
           <h3>Modifier les options de base</h3>
           <table className='table w-100'>
           <thead>
             <tr>
               <th>Nom</th>
               <th>Prix</th>
-              <th>Option obligatoire</th>
-              <th>Activer</th>
+              <th>Rendre l'option obligatoire</th>
+              <th>Activer l'option pour la voiture</th>
             </tr>
           </thead>
           <tbody>
@@ -257,6 +257,9 @@ function Admin() {
           </tbody>
         </table>
         </div>
+          )
+        }
+        
       </div>
 
     

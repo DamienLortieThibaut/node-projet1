@@ -71,7 +71,6 @@ function Custom() {
       modelId: car.id,
       date: currentDate,
     };
-    console.log(body)
 
     buyApi.add(body, accessToken)
       .then(data => {

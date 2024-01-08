@@ -51,14 +51,11 @@ function Accounting() {
     return formattedDateString;
   };
 
-  console.log(formattedDate);
-
   useEffect(() => {
     const filteredBuys = buys.filter((buy) => {
       const buyDate = new Date(buy.date);
       const buyMonth = buyDate.getMonth() + 1;
       const buyYear = buyDate.getFullYear();
-      console.log(buyMonth);
       return (
         (selectedMonth === "00" ||
           selectedMonth === "" ||

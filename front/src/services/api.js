@@ -186,8 +186,8 @@ const userApi = {
       }).then(response => response.json());
     },
   
-    delete: (getId, accessToken) => {
-      return fetch(`${API_BASE_URL}/carOption/delete/${getId}`, {
+    delete: (toolid, modelid, accessToken) => {
+      return fetch(`${API_BASE_URL}/carOption/deleteByToolAndModel/${toolid}/${modelid}`, {
         method: 'DELETE',
         headers: {
           'Authorization': accessToken,

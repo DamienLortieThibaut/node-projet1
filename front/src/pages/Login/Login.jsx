@@ -20,7 +20,6 @@ function Login() {
       .then(response => {
         const { token } = response;
         updateAccessToken(token);
-        console.log('Connexion réussie. Token stocké:', token);
         navigate('/');
       })
       .catch(error => {

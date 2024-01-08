@@ -34,7 +34,7 @@ function CardDetail({ car, onClose }) {
   return (
     <div className='card-detail'>
       <div className='close' onClick={onClose}>
-            <i class='bx bx-x'></i>
+            <i className='bx bx-x'></i>
         </div>
         <div className='head'>
             <img src={`http://localhost:8000/${car.image}`} alt={car.name} />
