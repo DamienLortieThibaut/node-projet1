@@ -9,7 +9,49 @@ function Accounting() {
   const [buys, setBuys] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
+  const [monthsOptions, setMonthsOptions] = useState([]);
+  const [yearsOptions, setYearsOptions] = useState([]);
   const [totalPrize, setTotalPrize] = useState(0);
+
+  const formatMonth = (month) => {
+    const monthNames = [
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre",
+    ];
+
+    const formattedMonth = parseInt(month, 10);
+    if (formattedMonth >= 1 && formattedMonth <= 12) {
+      return monthNames[formattedMonth - 1];
+    }
+
+    return "";
+  };
+
+  const formattedDate = (date) => {
+    const formattedDateString = new Date(date).toLocaleString("fr-FR", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      timeZone: "UTC",
+    });
+
+    return formattedDateString;
+  };
+
+  console.log(formattedDate);
 
   useEffect(() => {
     const filteredBuys = buys.filter((buy) => {
@@ -40,14 +82,32 @@ function Accounting() {
 
   const calculateTotalPrize = (buysData) => {
     const total = buysData.reduce((acc, buy) => acc + buy.prize, 0);
-    setTotalPrize(total);
+    setTotalPrize(total.toFixed(2));
   };
 
   useEffect(() => {
     // Charger tous les achats au montage initial
     buyApi
       .getAll(accessToken)
-      .then((data) => setBuys(data))
+      .then((data) => {
+        setBuys(data);
+
+        // Extraire les mois et années uniques des dates des achats
+        const uniqueMonths = [
+          ...new Set(data.map((buy) => new Date(buy.date).getMonth() + 1)),
+        ];
+        const uniqueYears = [
+          ...new Set(data.map((buy) => new Date(buy.date).getFullYear())),
+        ];
+
+        // Tri des mois et années de manière croissante
+        uniqueMonths.sort((a, b) => a - b);
+        uniqueYears.sort((a, b) => a - b);
+
+        // Ajout des options "Tous les mois" et "Toutes les années"
+        setMonthsOptions(["00", ...uniqueMonths]);
+        setYearsOptions(["00", ...uniqueYears]);
+      })
       .catch((error) =>
         console.error("Erreur lors de la récupération des achats:", error)
       );
@@ -60,31 +120,22 @@ function Accounting() {
           value={selectedMonth}
           onChange={(e) => handleFilterChange("month", e.target.value)}
         >
-          <option value="00">Tous les mois</option>
-          <option value="01">Janvier</option>
-          <option value="02">Février</option>
-          <option value="03">Mars</option>
-          <option value="04">Avril</option>
-          <option value="05">Mai</option>
-          <option value="06">Juin</option>
-          <option value="07">Juillet</option>
-          <option value="08">Aout</option>
-          <option value="09">Septembre</option>
-          <option value="10">Octobre</option>
-          <option value="11">Novembre</option>
-          <option value="12">Décembre</option>
-
-          {/* Ajoutez ici les options pour les mois */}
+          {monthsOptions.map((month) => (
+            <option key={month} value={month}>
+              {month === "00" ? "Tous les mois" : formatMonth(month)}
+            </option>
+          ))}
         </select>
+
         <select
           value={selectedYear}
           onChange={(e) => handleFilterChange("year", e.target.value)}
         >
-          <option value="00">Toutes les années</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          {/* Ajoutez ici les options pour les années */}
+          {yearsOptions.map((year) => (
+            <option key={year} value={year}>
+              {year === "00" ? "Toutes les années" : year}
+            </option>
+          ))}
         </select>
         <div className="total-prize">Somme des prix : {totalPrize}</div>
       </div>
@@ -99,18 +150,35 @@ function Accounting() {
           </tr>
         </thead>
         <tbody>
-          {buys.map((buy) => (
-            <tr key={buy.id}>
-              <td>{buy.id}</td>
-              <td>{buy.prize}</td>
-              <td>{buy.date}</td>
-              <td>
-                {buy.firstname + " "}
-                {buy.lastname}
-              </td>
-              <td>{buy.model}</td>
-            </tr>
-          ))}
+          {buys.map((buy) => {
+            const buyDate = new Date(buy.date);
+            const buyMonth = buyDate.getMonth() + 1;
+            const buyYear = buyDate.getFullYear();
+            if (
+              (selectedMonth === "00" ||
+                selectedMonth === "" ||
+                buyMonth === parseInt(selectedMonth, 10)) &&
+              (selectedYear === "00" ||
+                selectedYear === "" ||
+                buyYear === parseInt(selectedYear, 10))
+            ) {
+              return (
+                <tr key={buy.id}>
+                  <td>{buy.id}</td>
+                  <td>{buy.prize}</td>
+                  <td>{formattedDate(buy.date)}</td>
+                  <td>
+                    {buy.firstname + " "}
+                    {buy.lastname}
+                  </td>
+                  <td>{buy.model}</td>
+                </tr>
+              );
+            } else {
+              // Ne pas rendre la ligne si elle ne correspond pas aux filtres
+              return null;
+            }
+          })}
         </tbody>
       </table>
     </div>
