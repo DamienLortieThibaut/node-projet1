@@ -24,6 +24,7 @@ nav .action {
 nav .left .logo, nav .left ul {
     display: flex;
     align-items: center;
+    margin-right: 20px;
 }
 
 nav .action button {
@@ -50,7 +51,6 @@ nav .left ul {
     margin: 0px;
 }
 nav .left ul li a{
-    text-transform: uppercase;
     color: white;
     list-style: none;
     text-decoration: none;

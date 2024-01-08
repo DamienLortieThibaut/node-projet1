@@ -5,8 +5,8 @@ const middleware = require("../middleware/middleware");
 
 router.post(
   "/add",
-  middleware.authenticator,
-  middleware.isAdmin,
+  // middleware.authenticator,
+  // middleware.isAdmin,
   modelController.uploadImage,
   modelController.createModel
 );
